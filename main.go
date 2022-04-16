@@ -8,7 +8,7 @@ import (
 	"regexp"
 )
 
-type Store struct {
+type RawStore struct {
 	Id                int    `json:"id"`
 	Name              string `json:"name"`
 	Icon              int    `json:"icon"`
@@ -35,8 +35,8 @@ type StoreAttributes struct {
 	BusinessCompanyId []MixedSlice `json:"business_company_id"`
 }
 
-func getStores() ([]Store, error) {
-	var stores []Store
+func getStores() ([]RawStore, error) {
+	var rawStores []RawStore
 
 	storesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/stores.json")
 	defer storesResponse.Body.Close()
@@ -46,11 +46,11 @@ func getStores() ([]Store, error) {
 		return nil, err
 	}
 
-	if err := json.Unmarshal(body, &stores); err != nil {
+	if err := json.Unmarshal(body, &rawStores); err != nil {
 		return nil, err
 	}
 
-	return stores, nil
+	return rawStores, nil
 }
 
 func getStoreAttributes() (StoreAttributes, error) {
@@ -71,22 +71,22 @@ func getStoreAttributes() (StoreAttributes, error) {
 	return storeAttr, nil
 }
 
-func filterOnlyScStores(stores []Store) []Store {
-	var scStores []Store
+func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
+	var scRawStores []RawStore
 
 	r := regexp.MustCompile(`\d{8}0\d{2}`)
 
-	for _, store := range stores {
-		if r.Match([]byte(store.Services)) {
-			scStores = append(scStores, store)
+	for _, rawStore := range rawStores {
+		if r.Match([]byte(rawStore.Services)) {
+			scRawStores = append(scRawStores, rawStore)
 		}
 	}
 
-	return scStores
+	return scRawStores
 }
 
 func main() {
-	stores, err := getStores()
+	rawStores, err := getStores()
 	if err != nil {
 		log.Fatal("店舗一覧の取得に失敗")
 	}
@@ -95,5 +95,5 @@ func main() {
 		log.Fatal("属性の取得に失敗")
 	}
 
-	scStores := filterOnlyScStores(stores)
+	rawScStores := filterOnlyScRawStores(rawStores)
 }
