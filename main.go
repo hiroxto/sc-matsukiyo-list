@@ -35,6 +35,11 @@ type StoreAttributes struct {
 	BusinessCompanyId []MixedSlice `json:"business_company_id"`
 }
 
+// ToDo: 必要プロパティが未実装
+type Store struct {
+	RawStore RawStore
+}
+
 func getStores() ([]RawStore, error) {
 	var rawStores []RawStore
 
@@ -83,6 +88,23 @@ func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	}
 
 	return scRawStores
+}
+
+// ToDo: 未実装
+func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
+	var store Store
+
+	return store
+}
+
+func convertRawStoresToStores(rawStores []RawStore, attrs StoreAttributes) []Store {
+	var stores []Store
+
+	for _, rawStore := range rawStores {
+		stores = append(stores, convertRawStoreToStore(rawStore, attrs))
+	}
+
+	return stores
 }
 
 func main() {
