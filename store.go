@@ -16,6 +16,7 @@ type RawStore struct {
 	PostalCode        string `json:"postal_code"`
 	Address           string `json:"address"`
 	Url               string `json:"url"`
+	BusinessHours     string `json:"businesshours"`
 	Payments          string `json:"payments"`
 	Products          string `json:"products"`
 	Services          string `json:"services"`
@@ -118,6 +119,7 @@ func convertAttrToInformation(bitsString string, attr []MixedSlice) []Informatio
 func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	var store Store
 
+	store.BusinessHours = convertAttrToInformation(rawStore.BusinessHours, attrs.BusinessHours)
 	store.Services = convertAttrToInformation(rawStore.Services, attrs.Services)
 	store.Products = convertAttrToInformation(rawStore.Products, attrs.Products)
 	store.Payments = convertAttrToInformation(rawStore.Payments, attrs.Payments)
