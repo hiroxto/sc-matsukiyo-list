@@ -14,6 +14,7 @@ func main() {
 
 	rawScStores := filterOnlyScRawStores(rawStores)
 
-	// ToDo: 未実装
-	_ = convertRawStoresToStores(rawScStores, attrs)
+	stores := convertRawStoresToStores(rawScStores, attrs)
+
+	exportToJson(stores, "dist/sc-matsukiyo-list.json")
 }
