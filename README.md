@@ -1,6 +1,6 @@
 # sc-matsukiyo-list
 
-SCのマツモトキヨシを抽出するプログラミング
+SCのマツモトキヨシを抽出するプログラム
 
 ## Licence
 
