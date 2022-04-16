@@ -35,9 +35,19 @@ type StoreAttributes struct {
 	BusinessCompanyId []MixedSlice `json:"business_company_id"`
 }
 
+type InformationAndIcon struct {
+	Id   int
+	Name string
+	Icon string
+}
+
 // ToDo: 必要プロパティが未実装
 type Store struct {
-	RawStore RawStore
+	BusinessHours []InformationAndIcon
+	Services      []InformationAndIcon
+	Products      []InformationAndIcon
+	Payments      []InformationAndIcon
+	RawStore      RawStore
 }
 
 func getStores() ([]RawStore, error) {
