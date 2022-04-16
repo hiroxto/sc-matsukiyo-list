@@ -29,7 +29,7 @@ type StoreAttributes struct {
 		IconPath string `json:"iconPath"`
 	} `json:"config"`
 	Icon              []MixedSlice `json:"icon"`
-	Businesshours     []MixedSlice `json:"businesshours"`
+	BusinessHours     []MixedSlice `json:"businesshours"`
 	Services          []MixedSlice `json:"services"`
 	Products          []MixedSlice `json:"products"`
 	Payments          []MixedSlice `json:"payments"`
