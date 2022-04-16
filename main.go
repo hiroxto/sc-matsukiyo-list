@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"regexp"
 )
 
 type Store struct {
@@ -67,7 +68,20 @@ func getStoreAttributes() (StoreAttributes, error) {
 	}
 
 	return storeAttr, nil
+}
 
+func filterOnlyScStores(stores []Store) []Store {
+	var scStores []Store
+
+	r := regexp.MustCompile(`\d{8}0\d{2}`)
+
+	for _, store := range stores {
+		if r.Match([]byte(store.Services)) {
+			scStores = append(scStores, store)
+		}
+	}
+
+	return scStores
 }
 
 func main() {
