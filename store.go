@@ -9,17 +9,21 @@ import (
 )
 
 type RawStore struct {
-	Id                int    `json:"id"`
-	Name              string `json:"name"`
-	Icon              int    `json:"icon"`
-	BusinessCompanyId string `json:"business_company_id"`
-	PostalCode        string `json:"postal_code"`
-	Address           string `json:"address"`
-	Url               string `json:"url"`
-	BusinessHours     string `json:"businesshours"`
-	Payments          string `json:"payments"`
-	Products          string `json:"products"`
-	Services          string `json:"services"`
+	Id                int         `json:"id"`
+	Name              string      `json:"name"`
+	Icon              int         `json:"icon"`
+	BusinessCompanyId string      `json:"business_company_id"`
+	PostalCode        string      `json:"postal_code"`
+	Address           string      `json:"address"`
+	Latitude          float64     `json:"latitude"`
+	Longitude         float64     `json:"longitude"`
+	ClosedDay         string      `json:"closed_day"`
+	Comment           interface{} `json:"comment"`
+	Url               string      `json:"url"`
+	BusinessHours     string      `json:"businesshours"`
+	Payments          string      `json:"payments"`
+	Products          string      `json:"products"`
+	Services          string      `json:"services"`
 }
 
 type MixedSlice = []interface{}
@@ -46,7 +50,11 @@ type Store struct {
 	Name          string               `json:"name"`
 	PostalCode    string               `json:"postal_code"`
 	Address       string               `json:"address"`
+	Latitude      float64              `json:"latitude"`
+	Longitude     float64              `json:"longitude"`
 	Url           string               `json:"url"`
+	ClosedDay     string               `json:"closed_day"`
+	Comment       interface{}          `json:"comment"`
 	BusinessHours []InformationAndIcon `json:"businesshours"`
 	Services      []InformationAndIcon `json:"services"`
 	Products      []InformationAndIcon `json:"products"`
@@ -127,7 +135,11 @@ func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	store.Name = rawStore.Name
 	store.PostalCode = rawStore.PostalCode
 	store.Address = rawStore.Address
+	store.Latitude = rawStore.Latitude
+	store.Longitude = rawStore.Longitude
 	store.Url = rawStore.Url
+	store.ClosedDay = rawStore.ClosedDay
+	store.Comment = rawStore.Comment
 	store.BusinessHours = convertAttrToInformation(rawStore.BusinessHours, attrs.BusinessHours)
 	store.Services = convertAttrToInformation(rawStore.Services, attrs.Services)
 	store.Products = convertAttrToInformation(rawStore.Products, attrs.Products)
