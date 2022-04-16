@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 type RawStore struct {
@@ -36,14 +37,12 @@ type StoreAttributes struct {
 }
 
 type InformationAndIcon struct {
-	Id   int
 	Name string
 	Icon string
 }
 
-// ToDo: 必要プロパティが未実装
 type Store struct {
-	BusinessHours []InformationAndIcon
+	BusinessHours []InformationAndIcon // 未実装
 	Services      []InformationAndIcon
 	Products      []InformationAndIcon
 	Payments      []InformationAndIcon
@@ -100,9 +99,31 @@ func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	return scRawStores
 }
 
-// ToDo: 未実装
+func convertAttrToInformation(bitsString string, attr []MixedSlice) []InformationAndIcon {
+	var infos []InformationAndIcon
+
+	bits := strings.Split(bitsString, "")
+	for index, bit := range bits {
+		if bit == "1" {
+			info := InformationAndIcon{
+				Name: attr[index][1].(string),
+				Icon: attr[index][2].(string),
+			}
+			infos = append(infos, info)
+		}
+	}
+
+	return infos
+}
+
 func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	var store Store
+
+	store.Services = convertAttrToInformation(rawStore.Services, attrs.Services)
+	store.Products = convertAttrToInformation(rawStore.Products, attrs.Products)
+	store.Payments = convertAttrToInformation(rawStore.Payments, attrs.Payments)
+
+	store.RawStore = rawStore
 
 	return store
 }
