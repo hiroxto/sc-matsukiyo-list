@@ -41,11 +41,11 @@ type InformationAndIcon struct {
 }
 
 type Store struct {
-	BusinessHours []InformationAndIcon // 未実装
-	Services      []InformationAndIcon
-	Products      []InformationAndIcon
-	Payments      []InformationAndIcon
-	RawStore      RawStore
+	BusinessHours []InformationAndIcon `json:"businesshours"`
+	Services      []InformationAndIcon `json:"services"`
+	Products      []InformationAndIcon `json:"products"`
+	Payments      []InformationAndIcon `json:"payments"`
+	RawStore      RawStore             `json:"raw_store"`
 }
 
 func getStores() ([]RawStore, error) {
