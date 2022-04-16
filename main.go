@@ -118,4 +118,7 @@ func main() {
 	}
 
 	rawScStores := filterOnlyScRawStores(rawStores)
+
+	// ToDo: 未実装
+	_ = convertRawStoresToStores(rawScStores, attrs)
 }
