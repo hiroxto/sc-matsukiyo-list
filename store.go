@@ -42,11 +42,15 @@ type InformationAndIcon struct {
 }
 
 type Store struct {
+	Id            int                  `json:"id"`
+	Name          string               `json:"name"`
+	PostalCode    string               `json:"postal_code"`
+	Address       string               `json:"address"`
+	Url           string               `json:"url"`
 	BusinessHours []InformationAndIcon `json:"businesshours"`
 	Services      []InformationAndIcon `json:"services"`
 	Products      []InformationAndIcon `json:"products"`
 	Payments      []InformationAndIcon `json:"payments"`
-	RawStore      RawStore             `json:"raw_store"`
 }
 
 func getStores() ([]RawStore, error) {
@@ -119,12 +123,15 @@ func convertAttrToInformation(bitsString string, attr []MixedSlice) []Informatio
 func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	var store Store
 
+	store.Id = rawStore.Id
+	store.Name = rawStore.Name
+	store.PostalCode = rawStore.PostalCode
+	store.Address = rawStore.Address
+	store.Url = rawStore.Url
 	store.BusinessHours = convertAttrToInformation(rawStore.BusinessHours, attrs.BusinessHours)
 	store.Services = convertAttrToInformation(rawStore.Services, attrs.Services)
 	store.Products = convertAttrToInformation(rawStore.Products, attrs.Products)
 	store.Payments = convertAttrToInformation(rawStore.Payments, attrs.Payments)
-
-	store.RawStore = rawStore
 
 	return store
 }
