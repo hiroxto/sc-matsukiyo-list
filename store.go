@@ -86,7 +86,7 @@ func getStoreAttributes() (StoreAttributes, error) {
 }
 
 func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
-	var scRawStores []RawStore
+	scRawStores := make([]RawStore, 0)
 
 	r := regexp.MustCompile(`\d{8}0\d{2}`)
 
@@ -100,7 +100,7 @@ func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 }
 
 func convertAttrToInformation(bitsString string, attr []MixedSlice) []InformationAndIcon {
-	var infos []InformationAndIcon
+	infos := make([]InformationAndIcon, 0)
 
 	bits := strings.Split(bitsString, "")
 	for index, bit := range bits {
