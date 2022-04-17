@@ -16,5 +16,9 @@ func main() {
 
 	stores := convertRawStoresToStores(rawScStores, attrs)
 
-	exportToJson(stores, "dist/sc-matsukiyo-list.json")
+	err = exportToJson(stores, "dist/sc-matsukiyo-list.json")
+
+	if err != nil {
+		log.Fatal("JSONエクスポートに失敗", err)
+	}
 }
