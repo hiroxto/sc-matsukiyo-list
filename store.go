@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// RawStore はAPIから取得した生の店舗情報。
 type RawStore struct {
 	Id                int         `json:"id"`
 	Name              string      `json:"name"`
@@ -26,8 +27,10 @@ type RawStore struct {
 	Services          string      `json:"services"`
 }
 
+// MixedSlice StoreAttributesで利用されるslice。stringやintが混じっているため，これで表現する。
 type MixedSlice = []interface{}
 
+// StoreAttributes のレスポンス。
 type StoreAttributes struct {
 	Config struct {
 		IconPath string `json:"iconPath"`
@@ -40,11 +43,13 @@ type StoreAttributes struct {
 	BusinessCompanyId []MixedSlice `json:"business_company_id"`
 }
 
+// InformationAndIcon は店舗情報の名前とアイコンを表す。
 type InformationAndIcon struct {
 	Name string
 	Icon string
 }
 
+// Store は扱いやすいように加工した店舗情報。
 type Store struct {
 	Id            int                  `json:"id"`
 	Name          string               `json:"name"`
@@ -61,6 +66,7 @@ type Store struct {
 	Payments      []InformationAndIcon `json:"payments"`
 }
 
+// getStores は店舗一覧を取得する。
 func getStores() ([]RawStore, error) {
 	var rawStores []RawStore
 
@@ -79,6 +85,7 @@ func getStores() ([]RawStore, error) {
 	return rawStores, nil
 }
 
+// getStoreAttributes は店舗の属性情報を取得する。
 func getStoreAttributes() (StoreAttributes, error) {
 	var storeAttr StoreAttributes
 
@@ -97,6 +104,7 @@ func getStoreAttributes() (StoreAttributes, error) {
 	return storeAttr, nil
 }
 
+// filterOnlyScRawStores は店舗のスライスからSC店舗のみを抽出する。
 func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	scRawStores := make([]RawStore, 0)
 
@@ -111,6 +119,7 @@ func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	return scRawStores
 }
 
+// convertAttrToInformation は店舗の属性情報を InformationAndIcon に変換する。
 func convertAttrToInformation(bitsString string, attr []MixedSlice) []InformationAndIcon {
 	infos := make([]InformationAndIcon, 0)
 
@@ -128,6 +137,7 @@ func convertAttrToInformation(bitsString string, attr []MixedSlice) []Informatio
 	return infos
 }
 
+// convertRawStoreToStore は生の店舗情報を扱いやすい Store に変換する。
 func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	var store Store
 
@@ -148,6 +158,7 @@ func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	return store
 }
 
+// convertRawStoresToStores は生の店舗情報のスライスを扱いやすい店舗情報のスライスに変換する。
 func convertRawStoresToStores(rawStores []RawStore, attrs StoreAttributes) []Store {
 	var stores []Store
 

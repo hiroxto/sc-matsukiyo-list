@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// exportToJson は店舗情報をJSONにエクスポートする
 func exportToJson(stores []Store, filePath string) error {
 	jsonData, err := json.Marshal(stores)
 
