@@ -14,7 +14,10 @@ func main() {
 
 	rawScStores := filterOnlyScRawStores(rawStores)
 
-	stores := convertRawStoresToStores(rawScStores, attrs)
+	stores, err := convertRawStoresToStores(rawScStores, attrs)
+	if err != nil {
+		log.Fatal("店舗情報の変換に失敗", err)
+	}
 
 	err = exportToJson(stores, "dist/sc-matsukiyo-list.json")
 

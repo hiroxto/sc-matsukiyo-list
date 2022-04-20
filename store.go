@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"regexp"
@@ -120,8 +121,12 @@ func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 }
 
 // convertAttrToInformation は店舗の属性情報を InformationAndIcon に変換する。
-func convertAttrToInformation(bitsString string, attr []MixedSlice) []InformationAndIcon {
+func convertAttrToInformation(bitsString string, attr []MixedSlice) ([]InformationAndIcon, error) {
 	infos := make([]InformationAndIcon, 0)
+
+	if len(bitsString) != len(attr) {
+		return nil, errors.New("ビット数と属性数が一致していません。")
+	}
 
 	bits := strings.Split(bitsString, "")
 	for index, bit := range bits {
@@ -134,11 +139,11 @@ func convertAttrToInformation(bitsString string, attr []MixedSlice) []Informatio
 		}
 	}
 
-	return infos
+	return infos, nil
 }
 
 // convertRawStoreToStore は生の店舗情報を扱いやすい Store に変換する。
-func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
+func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) (Store, error) {
 	var store Store
 
 	store.Id = rawStore.Id
@@ -150,21 +155,46 @@ func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) Store {
 	store.Url = rawStore.Url
 	store.ClosedDay = rawStore.ClosedDay
 	store.Comment = rawStore.Comment
-	store.BusinessHours = convertAttrToInformation(rawStore.BusinessHours, attrs.BusinessHours)
-	store.Services = convertAttrToInformation(rawStore.Services, attrs.Services)
-	store.Products = convertAttrToInformation(rawStore.Products, attrs.Products)
-	store.Payments = convertAttrToInformation(rawStore.Payments, attrs.Payments)
 
-	return store
+	businessHours, err := convertAttrToInformation(rawStore.BusinessHours, attrs.BusinessHours)
+	if err != nil {
+		return store, err
+	}
+	store.BusinessHours = businessHours
+
+	services, err := convertAttrToInformation(rawStore.Services, attrs.Services)
+	if err != nil {
+		return store, err
+	}
+	store.Services = services
+
+	products, err := convertAttrToInformation(rawStore.Products, attrs.Products)
+	if err != nil {
+		return store, err
+	}
+	store.Products = products
+
+	payments, err := convertAttrToInformation(rawStore.Payments, attrs.Payments)
+	if err != nil {
+		return store, err
+	}
+	store.Payments = payments
+
+	return store, nil
 }
 
 // convertRawStoresToStores は生の店舗情報のスライスを扱いやすい店舗情報のスライスに変換する。
-func convertRawStoresToStores(rawStores []RawStore, attrs StoreAttributes) []Store {
+func convertRawStoresToStores(rawStores []RawStore, attrs StoreAttributes) ([]Store, error) {
 	var stores []Store
 
 	for _, rawStore := range rawStores {
-		stores = append(stores, convertRawStoreToStore(rawStore, attrs))
+		store, err := convertRawStoreToStore(rawStore, attrs)
+		if err != nil {
+			return nil, err
+		}
+
+		stores = append(stores, store)
 	}
 
-	return stores
+	return stores, nil
 }
