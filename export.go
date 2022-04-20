@@ -18,9 +18,7 @@ func exportToJson(stores []Store, filePath string) error {
 		return err
 	}
 
-	_, err = f.Write(jsonData)
-
-	if err != nil {
+	if _, err = f.Write(jsonData); err != nil {
 		return err
 	}
 
