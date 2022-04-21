@@ -31,10 +31,11 @@ func exportToJson(stores []Store, filePath string) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
 	if _, err = f.Write(jsonData); err != nil {
 		return err
 	}
 
-	return nil
+	return f.Sync()
 }
