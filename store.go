@@ -46,8 +46,8 @@ type StoreAttributes struct {
 
 // InformationAndIcon は店舗情報の名前とアイコンを表す。
 type InformationAndIcon struct {
-	Name string
-	Icon string
+	Name string `json:"name"`
+	Icon string `json:"icon"`
 }
 
 // Store は扱いやすいように加工した店舗情報。
