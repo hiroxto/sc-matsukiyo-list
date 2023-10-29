@@ -18,3 +18,5 @@
 *.log
 
 /sc-matsukiyo-list
+
+.idea
