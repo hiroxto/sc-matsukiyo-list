@@ -71,7 +71,7 @@ type Store struct {
 func getStores() ([]RawStore, error) {
 	var rawStores []RawStore
 
-	storesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/stores.json")
+	storesResponse, err := http.Get("https://www.matsukiyococokara-online.com/map/s3/json/stores.json")
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func getStores() ([]RawStore, error) {
 func getStoreAttributes() (StoreAttributes, error) {
 	var storeAttr StoreAttributes
 
-	storeAttributesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/storeAttributes.json")
+	storeAttributesResponse, err := http.Get("https://www.matsukiyococokara-online.com/map/s3/json/storeAttributes.json")
 	if err != nil {
 		return StoreAttributes{}, err
 	}
