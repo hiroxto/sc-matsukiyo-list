@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// RawStore はAPIから取得した生の店舗情報。
+// RawStore APIから取得した生の店舗情報
 type RawStore struct {
 	Id                int         `json:"id"`
 	Name              string      `json:"name"`
@@ -31,7 +31,7 @@ type RawStore struct {
 // MixedSlice StoreAttributesで利用されるslice。stringやintが混じっているため，これで表現する。
 type MixedSlice = []interface{}
 
-// StoreAttributes のレスポンス。
+// StoreAttributes StoreAttributesのレスポンス。
 type StoreAttributes struct {
 	Config struct {
 		IconPath string `json:"iconPath"`
@@ -44,13 +44,13 @@ type StoreAttributes struct {
 	BusinessCompanyId []MixedSlice `json:"business_company_id"`
 }
 
-// InformationAndIcon は店舗情報の名前とアイコンを表す。
+// InformationAndIcon 店舗情報の名前とアイコンを表す
 type InformationAndIcon struct {
 	Name string `json:"name"`
 	Icon string `json:"icon"`
 }
 
-// Store は扱いやすいように加工した店舗情報。
+// Store 扱いやすいように加工した店舗情報。
 type Store struct {
 	Id            int                  `json:"id"`
 	Name          string               `json:"name"`
@@ -67,11 +67,26 @@ type Store struct {
 	Payments      []InformationAndIcon `json:"payments"`
 }
 
-// getStores は店舗一覧を取得する。
+// getStores 店舗一覧を取得する。
 func getStores() ([]RawStore, error) {
 	var rawStores []RawStore
 
-	storesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/stores.json")
+	req, err := http.NewRequest("GET", "https://www.matsukiyococokara-online.com/map/s3/json/stores.json", nil)
+	if err != nil {
+		return nil, err
+	}
+	// NOTE: ヘッダーをセットしないと取得できない
+	req.Header.Set("DNT", "1")
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
+	client := new(http.Client)
+	storesResponse, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
 	body, err := io.ReadAll(storesResponse.Body)
 	defer storesResponse.Body.Close()
 
@@ -86,11 +101,26 @@ func getStores() ([]RawStore, error) {
 	return rawStores, nil
 }
 
-// getStoreAttributes は店舗の属性情報を取得する。
+// getStoreAttributes 店舗の属性情報を取得する。
 func getStoreAttributes() (StoreAttributes, error) {
 	var storeAttr StoreAttributes
 
-	storeAttributesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/storeAttributes.json")
+	req, err := http.NewRequest("GET", "https://www.matsukiyococokara-online.com/map/s3/json/storeAttributes.json", nil)
+	if err != nil {
+		return StoreAttributes{}, err
+	}
+	// NOTE: ヘッダーをセットしないと取得できない
+	req.Header.Set("DNT", "1")
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
+	client := new(http.Client)
+	storeAttributesResponse, err := client.Do(req)
+	if err != nil {
+		return StoreAttributes{}, err
+	}
+
 	body, err := io.ReadAll(storeAttributesResponse.Body)
 	defer storeAttributesResponse.Body.Close()
 
@@ -105,11 +135,12 @@ func getStoreAttributes() (StoreAttributes, error) {
 	return storeAttr, nil
 }
 
-// filterOnlyScRawStores は店舗のスライスからSC店舗のみを抽出する。
+// filterOnlyScRawStores 店舗のスライスからSC店舗のみを抽出する。dカード特約店(クレジットカード/iD)の値を見て判断する。
 func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	scRawStores := make([]RawStore, 0)
 
-	r := regexp.MustCompile(`\d{8}0\d{2}`)
+	// NOTE: ハードコーディングしているからサービスの増減があると動かなくなる
+	r := regexp.MustCompile(`\d{7}0\d{2}`)
 
 	for _, rawStore := range rawStores {
 		if r.Match([]byte(rawStore.Services)) {
@@ -120,7 +151,7 @@ func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	return scRawStores
 }
 
-// convertAttrToInformation は店舗の属性情報を InformationAndIcon に変換する。
+// convertAttrToInformation 店舗の属性情報を InformationAndIcon に変換する。
 func convertAttrToInformation(bitsString string, attr []MixedSlice) ([]InformationAndIcon, error) {
 	infos := make([]InformationAndIcon, 0)
 
@@ -142,7 +173,7 @@ func convertAttrToInformation(bitsString string, attr []MixedSlice) ([]Informati
 	return infos, nil
 }
 
-// convertRawStoreToStore は生の店舗情報を扱いやすい Store に変換する。
+// convertRawStoreToStore 生の店舗情報を扱いやすい Store に変換する。
 func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) (Store, error) {
 	var store Store
 
@@ -183,7 +214,7 @@ func convertRawStoreToStore(rawStore RawStore, attrs StoreAttributes) (Store, er
 	return store, nil
 }
 
-// convertRawStoresToStores は生の店舗情報のスライスを扱いやすい店舗情報のスライスに変換する。
+// convertRawStoresToStores 生の店舗情報のスライスを扱いやすい店舗情報のスライスに変換する。
 func convertRawStoresToStores(rawStores []RawStore, attrs StoreAttributes) ([]Store, error) {
 	var stores []Store
 

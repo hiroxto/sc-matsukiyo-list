@@ -4,7 +4,7 @@ SCのマツモトキヨシを抽出するプログラム
 
 ## 収集方法
 
-[マツキヨの公式サイトの店舗検索ページ](https://www.matsukiyo.co.jp/map/search)で使用しているJSONデータを使う。
+[マツキヨココカラ公式サイトの店舗検索ページ](https://www.matsukiyococokara-online.com/map/search/)で使用しているJSONデータを使う。
 - stores.json
     - 店舗の一覧が返ってくる
     - 決済方法や取り扱い商品，サービスなどは2進数で表されている
