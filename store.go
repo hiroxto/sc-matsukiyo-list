@@ -71,7 +71,18 @@ type Store struct {
 func getStores() ([]RawStore, error) {
 	var rawStores []RawStore
 
-	storesResponse, err := http.Get("https://www.matsukiyococokara-online.com/map/s3/json/stores.json")
+	req, err := http.NewRequest("GET", "https://www.matsukiyococokara-online.com/map/s3/json/stores.json", nil)
+	if err != nil {
+		return nil, err
+	}
+	// NOTE: ヘッダーをセットしないと取得できない
+	req.Header.Set("DNT", "1")
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
+	client := new(http.Client)
+	storesResponse, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +105,18 @@ func getStores() ([]RawStore, error) {
 func getStoreAttributes() (StoreAttributes, error) {
 	var storeAttr StoreAttributes
 
-	storeAttributesResponse, err := http.Get("https://www.matsukiyococokara-online.com/map/s3/json/storeAttributes.json")
+	req, err := http.NewRequest("GET", "https://www.matsukiyococokara-online.com/map/s3/json/storeAttributes.json", nil)
+	if err != nil {
+		return StoreAttributes{}, err
+	}
+	// NOTE: ヘッダーをセットしないと取得できない
+	req.Header.Set("DNT", "1")
+	req.Header.Set("Sec-Fetch-Dest", "empty")
+	req.Header.Set("Sec-Fetch-Mode", "cors")
+	req.Header.Set("Sec-Fetch-Site", "same-origin")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
+	client := new(http.Client)
+	storeAttributesResponse, err := client.Do(req)
 	if err != nil {
 		return StoreAttributes{}, err
 	}
