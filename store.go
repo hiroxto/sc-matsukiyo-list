@@ -135,11 +135,12 @@ func getStoreAttributes() (StoreAttributes, error) {
 	return storeAttr, nil
 }
 
-// filterOnlyScRawStores 店舗のスライスからSC店舗のみを抽出する。
+// filterOnlyScRawStores 店舗のスライスからSC店舗のみを抽出する。dカード特約店(クレジットカード/iD)の値を見て判断する。
 func filterOnlyScRawStores(rawStores []RawStore) []RawStore {
 	scRawStores := make([]RawStore, 0)
 
-	r := regexp.MustCompile(`\d{8}0\d{2}`)
+	// NOTE: ハードコーディングしているからサービスの増減があると動かなくなる
+	r := regexp.MustCompile(`\d{7}0\d{2}`)
 
 	for _, rawStore := range rawStores {
 		if r.Match([]byte(rawStore.Services)) {
