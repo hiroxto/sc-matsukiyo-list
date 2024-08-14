@@ -72,6 +72,10 @@ func getStores() ([]RawStore, error) {
 	var rawStores []RawStore
 
 	storesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/stores.json")
+	if err != nil {
+		return nil, err
+	}
+
 	body, err := io.ReadAll(storesResponse.Body)
 	defer storesResponse.Body.Close()
 
@@ -91,6 +95,10 @@ func getStoreAttributes() (StoreAttributes, error) {
 	var storeAttr StoreAttributes
 
 	storeAttributesResponse, err := http.Get("https://www.matsukiyo.co.jp/map/s3/json/storeAttributes.json")
+	if err != nil {
+		return StoreAttributes{}, err
+	}
+
 	body, err := io.ReadAll(storeAttributesResponse.Body)
 	defer storeAttributesResponse.Body.Close()
 
