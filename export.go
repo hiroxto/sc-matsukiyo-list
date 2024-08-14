@@ -6,14 +6,14 @@ import (
 	"path/filepath"
 )
 
-// fileExists はファイルの存在を確認する
+// fileExists ファイルの存在を確認する
 func fileExists(name string) bool {
 	_, err := os.Stat(name)
 
 	return !os.IsNotExist(err)
 }
 
-// exportToJson は店舗情報をJSONにエクスポートする
+// exportToJson 店舗情報をJSONにエクスポートする
 func exportToJson(stores []Store, filePath string) error {
 	jsonData, err := json.Marshal(stores)
 	if err != nil {
